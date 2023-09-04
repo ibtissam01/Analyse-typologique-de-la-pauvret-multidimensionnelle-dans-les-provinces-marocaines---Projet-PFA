@@ -1,0 +1,136 @@
+---
+title: "reporting"
+author: "me"
+date: "2023-09-04"
+output: html_document
+---
+
+# **Analyse des composants principaux**
+
+#### ***Dataset***
+
+Cette jeu de données contient **75** individus et **14** variables, **1** variable qualitative est considérée comme illustrative.
+
+------------------------------------------------------------------------
+
+### **1. Etude des valeurs aberrantes**
+
+L\'analyse des graphiques ne détecte aucune valeur aberrante.
+
+------------------------------------------------------------------------
+
+### **2. Répartition de l'inertie**
+
+L'inertie de premières dimensions montre s'il existe des relations fortes entre les variables et suggère le nombre de dimensions à étudier.
+
+Les deux premières dimensions de l'ACP expriment **50,09 %** de l'inertie totale de l'ensemble de données ; cela signifie que 50,09% de la variabilité totale des individus (ou variables) du nuage est expliquée par le plan. Ce pourcentage est relativement élevé et donc le premier plan représente bien la variabilité des données. Cette valeur est supérieure à la valeur de référence qui vaut **37,95%** , la variabilité expliquée par ce plan est donc significative (la valeur de référence est le quantile 0,95 de la distribution des pourcentages d'inertie obtenue en simulant 1690 tableaux de données de taille équivalente à partir d'un distribution normale).
+
+A partir de ces observations, il vaudrait mieux interpréter également les dimensions supérieures ou égales à la troisième.
+
+***Figure 2 - Décomposition de l'inertie totale sur les composants du PCA***
+
+Une estimation du bon nombre d'axes à interpréter suggère de restreindre l'analyse à la description des 3 premiers axes. Ces axes présentent une inertie supérieure à celles obtenues par le quantile 0,95 des distributions aléatoires (64,14% contre 51,54%). Cette observation suggère que seuls ces axes sont porteurs d'une réelle information. En conséquence, la description s\'orientera vers ces axes.
+
+### **3. Description de l'avion 1:2**
+
+**Figure 3.1 - Carte factorielle des individus (PCA)** *Les individus étiquetés sont ceux ayant la plus forte contribution à la construction du plan.*
+
+La valeur p du test de Wilks indique quels facteurs variables sont les mieux séparés sur le plan (c'est-à-dire lesquels expliquent le mieux la distance entre les individus).
+
+```         
+Competition     0.366311 
+```
+
+Il n'existe qu'une seule variable qualitative possible pour illustrer la distance entre les individus : *la concurrence* .
+
+**Figure 3.2 - Carte factorielle des individus (PCA)** *Les individus étiquetés sont ceux qui ont la plus forte contribution à la construction du plan. Les individus sont colorés selon leur catégorie pour la variable* Compétition.
+
+**Figure 3.3 - Carte factorielle des variables (PCA)** *Les variables en noir sont considérées comme actives tandis que celles en bleu sont illustratives. Les variables étiquetées sont celles les mieux représentées sur le plan.*
+
+**Figure 3.4 - Carte factorielle qualitative (PCA)** *Les facteurs étiquetés sont ceux les mieux représentés sur le plan.*
+
+La **dimension 1** oppose des individus tels que *Karpov* , *Sebrle* , *Clay* et *Macey* (à droite du graphique, caractérisés par une coordonnée fortement positive sur l'axe) à des individus tels que *BOURGUIGNON* , *Uldal* , *Lorenzo* , *NOOL* et *Karlivans* (à gauche de le graphique, caractérisé par une coordonnée fortement négative sur l'axe).
+
+Le groupe dans lequel se trouvent les individus *Karpov* , *Sebrle* , *Clay* et *Macey* (caractérisé par une coordonnée positive sur l'axe) partage :
+
+-   valeurs élevées pour les variables *Points* , *High.jump* , *Discus* , *Shot.put* et *Long.jump* (les variables sont triées par ordre décroissant).
+
+-   valeurs faibles pour les variables *400m* , *110m.hurdle* , *Rank* et *100m* (les variables sont triées des plus faibles).
+
+Le groupe dans lequel se trouvent les individus *BOURGUIGNON* , *Uldal* , *Lorenzo* , *NOOL* et *Karlivans* (caractérisé par une coordonnée négative sur l'axe) partage :
+
+-   valeurs élevées pour les variables *110m.hurdle* , *100m* et *Rank* (les variables sont triées des plus fortes).
+
+-   valeurs faibles pour les variables *Discus* , *High.jump* , *Points* et *Shot.put* (les variables sont triées des plus faibles).
+
+A noter que la variable *Points* est fortement corrélée à cette dimension (corrélation de 0,91). Cette variable pourrait donc se résumer à la dimension 1.
+
+La **dimension 2** oppose des individus tels que *Casarsa* , *YURKOV* et *Parkhomenko* (en haut du graphique, caractérisés par une coordonnée fortement positive sur l'axe) à des individus tels que *Warners* , *Drews* et *WARNERS* (en bas du graphique, caractérisés par une coordonnée fortement négative sur l'axe).
+
+Le groupe dans lequel se trouvent les individus *Casarsa* , *YURKOV* et *Parkhomenko* (caractérisé par une coordonnée positive sur l'axe) partage :
+
+-   valeurs élevées pour la variable *400m* .
+
+-   valeurs faibles pour la variable *Long.jump* .
+
+Le groupe dans lequel se trouvent les individus *Warners* , *Drews* et *WARNERS* (caractérisé par une coordonnée négative sur l'axe) partage :
+
+-   valeurs élevées pour la variable *Pole.vault* .
+
+-   valeurs faibles pour la variable *110m.hurdle* .
+
+### **4. Description de la dimension 3**
+
+**Figure 4.1 - Carte factorielle des individus (PCA)** *Les individus étiquetés sont ceux qui ont la plus forte contribution à la construction du plan.*
+
+La valeur p du test de Wilks indique quels facteurs variables sont les mieux séparés sur le plan (c'est-à-dire lesquels expliquent le mieux la distance entre les individus).
+
+```         
+Competition     0.496903 
+```
+
+Il n'existe qu'une seule variable qualitative possible pour illustrer la distance entre les individus : *la concurrence* .
+
+**Figure 4.2 - Carte factorielle des individus (PCA)** *Les individus étiquetés sont ceux ayant la plus forte contribution à la construction du plan. Les individus sont colorés selon leur catégorie pour la variable* Compétition.
+
+**Figure 4.3 - Carte factorielle des variables (PCA)** *Les variables en noir sont considérées comme actives tandis que celles en bleu sont illustratives. Les variables étiquetées sont celles les mieux représentées sur le plan.*
+
+**Figure 4.4 - Carte factorielle qualitative (PCA)** *Les facteurs étiquetés sont ceux les mieux représentés sur le plan.*
+
+La **dimension 3** oppose des individus tels que *KARPOV* , *Korkizoglou* , *Terek* et *CLAY* (à droite du graphique, caractérisé par une coordonnée fortement positive sur l'axe) à des individus tels que *ZSIVOCZKY* , *Barras* , *Zsivoczky* , *McMULLEN* , *Macey* , *Bernard* et *Smith* ( à gauche du graphique, caractérisé par une coordonnée fortement négative sur l'axe).
+
+Le groupe dans lequel se trouvent les individus *KARPOV* , *Korkizoglou* , *Terek* et *CLAY* (caractérisé par une coordonnée positive sur l'axe) partage :
+
+-   valeurs élevées pour la variable *1500m* .
+
+-   valeurs faibles pour la variable *Javeline* .
+
+Le groupe dans lequel se trouvent les individus *ZSIVOCZKY* , *Barras* , *Zsivoczky* , *McMULLEN* , *Macey* , *Bernard* et *Smith* (caractérisé par une coordonnée négative sur l'axe) partage :
+
+-   valeurs faibles pour les variables *1500m* et *Pole.vault* (les variables sont triées des plus faibles).
+
+### **5. Classement**
+
+**Figure 5 - Classification hiérarchique ascendante des individus.** *La classification faite sur les individus révèle 4 clusters.*
+
+Le **cluster 1** est composé d'individus tels que *YURKOV* , *MARTINEAU* , *NOOL* , *BOURGUIGNON* , *Parkhomenko* , *Lorenzo* , *Karlivans* , *Uldal* et *Casarsa* . Ce groupe se caractérise par :
+
+-   valeurs élevées pour les variables *100m* , *110m.hurdle* , *400m* et *Rank* (les variables sont triées des plus fortes).
+
+-   valeurs faibles pour les variables *Shot.put* , *Long.jump* et *Points* (les variables sont triées des plus faibles).
+
+Le **cluster 2** est composé d'individus tels que *WARNERS* , *Warners* , *Nool* , *Averyanov* , *Drews* et *Korkizoglou* . Ce groupe se caractérise par :
+
+-   valeurs élevées pour les variables *Pole.vault* et *1500m* (les variables sont triées par ordre décroissant).
+
+-   valeurs faibles pour les variables *100m* et *Javeline* (les variables sont triées des plus faibles).
+
+Le **cluster 3** est constitué d'individus comme *Macey* . Ce groupe se caractérise par :
+
+-   valeurs faibles pour les variables *1500m* et *Pole.vault* (les variables sont triées des plus faibles).
+
+Le **cluster 4** est composé d'individus tels que *Sebrle* , *Clay* et *Karpov* . Ce groupe se caractérise par :
+
+-   valeurs élevées pour les variables *Points* , *Long.jump* , *Discus* , *Shot.put* , *Javeline* et *High.jump* (les variables sont triées des plus fortes).
+
+-   valeurs faibles pour les variables *110m.hurdle* , *Rank* , *400m* et *100m* (les variables sont triées des plus faibles).

@@ -40,7 +40,8 @@ ui_dataset <- dashboardPage(
                 column(width = 12,
                        tabsetPanel(
                          id = "download_display_tabs",
-                         tabPanel("Afficher les Données", dataTableOutput("data_table")),
+                         tabPanel("About", textOutput("about_output")),
+                         tabPanel("Afficher les Données", DT::dataTableOutput("data_table")),
                          tabPanel("Statistique descriptive", verbatimTextOutput("summary_output"))
                        )
                 )
@@ -51,7 +52,7 @@ ui_dataset <- dashboardPage(
               h2("Analyse en Composantes Principales (ACP)"),
               tabsetPanel(
                 id = "acp_tabs",
-                tabPanel("Correlation", dataTableOutput("correlation_table")),
+                tabPanel("Correlation", DT::dataTableOutput("correlation_table")),
                 tabPanel("Inertie",
                          plotOutput("scree_plot"),
                          tableOutput("eigenvalues_table"),
@@ -64,13 +65,13 @@ ui_dataset <- dashboardPage(
                          plotOutput("indiv_graph1")
                 ),
                 tabPanel("Résultats des variables",
-                         dataTableOutput("variable_results_table")
+                         DT::dataTableOutput("variable_results_table")
                 ),
                 tabPanel("Résultats sur les individus",
-                         dataTableOutput("individual_results_table")
+                         DT::dataTableOutput("individual_results_table")
                 ),
                 tabPanel("Résultats des variables qualitatives",
-                         dataTableOutput("categorical_variable_results_table")
+                         DT::dataTableOutput("categorical_variable_results_table")
                 )
               )
       ),
@@ -94,30 +95,20 @@ ui_dataset <- dashboardPage(
                 tabPanel("Caractérisation des classes",
                          tableOutput("class_characterization_table")
                 ),
-                # Onglet "Liens avec la partition"
-                tabPanel("Liens avec la partition",
-                         tableOutput("partition_links_table")
-                )
+                
               )
       ),
       tabItem(tabName = "download_results",
               h2("Télécharger les Résultats"),
               fluidRow(
                 column(width = 6,
-                       actionButton("download_acp", "Télécharger les Résultats de l'ACP"),
-                       actionButton("download_classification", "Télécharger les Résultats de Classification")
+                       actionButton("download_acp", "Télécharger les Résultats de l'ACP et de Classification")
                 )
               ),
               fluidRow(
                 column(width = 12,
-                       h4("Lien de téléchargement pour l'ACP :"),
-                       downloadLink("download_link_acp", "Cliquez ici pour télécharger les résultats de l'ACP")
-                )
-              ),
-              fluidRow(
-                column(width = 12,
-                       h4("Lien de téléchargement pour la Classification :"),
-                       downloadLink("download_link_classification", "Cliquez ici pour télécharger les résultats de Classification")
+                       h4("Lien de téléchargement :"),
+                       uiOutput("download_link_acp")
                 )
               )
       )
@@ -147,11 +138,13 @@ shinyApp(
     })
     
     
-    
+    output$about_output <- renderText({
+      "Bienvenue dans l'application de visualisation des données. Cette application vous permet de télécharger, afficher et analyser des données."
+    })
     # Afficher les données sur le tableau de bord
-    output$data_table <- renderDataTable({
+    output$data_table <- DT::renderDataTable({
       data()
-    }) 
+    }, options = list(scrollX = TRUE, scrollY = "400px")) 
     
     output$summary_output <- renderPrint({
       req(data())  # Assurez-vous d'avoir les données nécessaires pour les statistiques descriptives
@@ -160,7 +153,7 @@ shinyApp(
       summary(data())
     })
     # Matrice de corrélation
-    output$correlation_table <- renderDataTable({
+    output$correlation_table <- DT::renderDataTable({
       
       data <- data()  # Supposons que vos données réactives sont stockées dans la variable 'data'
       
@@ -171,7 +164,7 @@ shinyApp(
       # Arrondir chaque élément de la matrice de corrélation à deux décimales
       matrice_corr_arrondie <- round(matrice_corr, 2)
       
-    })
+    }, options = list(scrollX = TRUE, scrollY = "300px"))
     # Effectuer l'ACP et stocker les résultats dans res.PCA
     res.PCA <- reactive({
       req(data())
@@ -219,20 +212,50 @@ shinyApp(
       res.PCA()$var
     })
     
-    # Tableau des résultats des variables
-    output$variable_results_table <- renderDataTable({
-      res.PCA()$var$coord
+    # Observer les changements de la valeur de input$download_acp
+    observeEvent(input$download_acp, {
+      # Générer le fichier HTML à partir du fichier Rmd
+      rmarkdown::render("resultat.Rmd", output_file = "resultat.html")
     })
+    
+    output$download_link_acp <- renderUI({
+      if (file.exists("resultat.html")) {
+        downloadLink(
+          "download_link_acp",
+          label = "Cliquez ici pour télécharger les résultats",
+          href = "resultat.html",
+          class = "btn btn-primary"
+        )
+      }
+    })
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    # Tableau des résultats des variables
+    output$variable_results_table <- DT::renderDataTable({
+      res.PCA()$var$coord
+    }, options = list(scrollX = TRUE, scrollY = "400px"))
     
     # Tableau des résultats sur les individus
-    output$individual_results_table <- renderDataTable({
+    output$individual_results_table <- DT::renderDataTable({
       res.PCA()$ind$coord
-    })
+    }, options = list(scrollX = TRUE, scrollY = "400px"))
     
     # Tableau des résultats des variables qualitatives
-    output$categorical_variable_results_table <- renderDataTable({
+    output$categorical_variable_results_table <- DT::renderDataTable({
       res.PCA()$quali$coord
-    })
+    }, options = list(scrollX = TRUE, scrollY = "400px"))
     
     # Observer les changements de la valeur de nb_clusters
     observe({
@@ -261,15 +284,13 @@ shinyApp(
           res$desc.axes
         })
         
-        #Description of the clusters by the variables
-        output$partition_links_table <- renderTable({
-          res$desc.var
-        })
+        
         
       }
     })
     
     # ... Ajoutez ici le code pour le téléchargement des résultats ..
+    
     
     
     
