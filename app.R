@@ -8,39 +8,48 @@ library(ggplot2)
 library(readxl)
 library(factoextra)
 library(pander)
+
 library(rsconnect)
 # Définition de l'interface utilisateur pour la page des jeux de données
 ui_dataset <- dashboardPage(
   dashboardHeader(title = "Poverty_2014"),
   dashboardSidebar(
+    
+    
     sidebarMenu(
-      menuItem("Télécharger et Afficher", tabName = "download_display", icon = icon("database")),
+      
+      menuItem("About database", tabName = "display", icon = icon("database")),
       menuItem("ACP", tabName = "acp", icon = icon("chart-bar")),
       menuItem("Classification", tabName = "classification", icon = icon("chart-pie")),
-      menuItem("Télécharger les Résultats", tabName = "download_results", icon = icon("download"))
+      
+      menuItem("Télécharger les Résultats", tabName = "download_results", icon = icon("download")),
+      menuItem("Upload", tabName = "download", icon = icon("upload"))
+      
+    ),
+    tabItems(
+      tabItem(tabName = "download",
+              fluidRow(
+                column(width = 12,
+                       fileInput("datafile", "Télécharger",
+                                 accept = c(".csv", ".xlsx")),
+                       selectInput("filetype", "Sélectionner le type de fichier",
+                                   choices = c("csv", "xlsx")),
+                       actionButton("loadData", "Télécharger")
+                )
+              )
+      )
     )
   ),
   
   dashboardBody(
     tabItems(
-      tabItem(tabName = "download_display",
-              h2("Télécharger et Afficher les Données"),
-              fluidRow(
-                column(width = 6,
-                       fileInput("datafile", "Télécharger les données",
-                                 accept = c(".csv", ".xlsx")
-                       ),
-                       selectInput("filetype", "Veuillez sélectionner le type de fichier",
-                                   choices = c("csv", "xlsx")
-                       ),
-                       actionButton("loadData", "Télécharger")
-                )
-              ),
+      tabItem(tabName = "display",
+              h2(" Afficher les Données"),
               fluidRow(
                 column(width = 12,
                        tabsetPanel(
                          id = "download_display_tabs",
-                         tabPanel("About", textOutput("about_output")),
+                         
                          tabPanel("Afficher les Données", DT::dataTableOutput("data_table")),
                          tabPanel("Statistique descriptive", verbatimTextOutput("summary_output"))
                        )
@@ -90,14 +99,11 @@ ui_dataset <- dashboardPage(
                          plotOutput("hcpc_tree_plot"),
                          plotOutput("hcpc_map_plot"),
                          plotOutput("hcpc_3d_map_plot")
-                ),
-                # Onglet "Caractérisation des classes"
-                tabPanel("Caractérisation des classes",
-                         tableOutput("class_characterization_table")
-                ),
+                )
                 
               )
       ),
+      
       tabItem(tabName = "download_results",
               h2("Télécharger les Résultats"),
               fluidRow(
@@ -138,9 +144,7 @@ shinyApp(
     })
     
     
-    output$about_output <- renderText({
-      "Bienvenue dans l'application de visualisation des données. Cette application vous permet de télécharger, afficher et analyser des données."
-    })
+    
     # Afficher les données sur le tableau de bord
     output$data_table <- DT::renderDataTable({
       data()
@@ -215,19 +219,22 @@ shinyApp(
     # Observer les changements de la valeur de input$download_acp
     observeEvent(input$download_acp, {
       # Générer le fichier HTML à partir du fichier Rmd
-      rmarkdown::render("resultat.Rmd", output_file = "resultat.html")
+      rmarkdown::render("resultat.Rmd", output_file = "resultat.pdf")
     })
     
     output$download_link_acp <- renderUI({
-      if (file.exists("resultat.html")) {
+      if (file.exists("resultat.pdf")) {
         downloadLink(
           "download_link_acp",
           label = "Cliquez ici pour télécharger les résultats",
-          href = "resultat.html",
+          href = "resultat.pdf",
           class = "btn btn-primary"
         )
       }
     })
+    
+    
+    
     
     
     
@@ -290,12 +297,26 @@ shinyApp(
     })
     
     # ... Ajoutez ici le code pour le téléchargement des résultats ..
+    observeEvent(input$download_acp, {
+      # Exécution de la PCA avec la variable qualitative
+      data <- data()  # Assuming your data is reactive and stored in the variable 'data'
+      
+      # Exclude the first column (categorical) from the data
+      data <- data[, -1]
+      res <- PCA(data, graph = FALSE)
+      
+      # Génération du fichier HTML
+      html_output <- capture.output(Investigate(res))  # Correction : Utilisez 'Investigate' avec une majuscule
+      html_file <- "resultat.html"  # Correction : Utilisez un nom de fichier approprié
+      writeLines(html_output, con = html_file)
+      
+      # Définir le lien de téléchargement
+      output$download_link_acp <- renderUI({
+        tags$a(href = html_file, download = "resultat.html", "Télécharger le fichier HTML")
+      })
+    })
     
     
     
     
   })
-
-
-
-
