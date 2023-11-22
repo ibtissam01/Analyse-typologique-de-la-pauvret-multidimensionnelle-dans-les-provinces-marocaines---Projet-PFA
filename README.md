@@ -11,10 +11,15 @@ Dans le but de mieux comprendre les différents profils de pauvreté dans les pr
 
 ## Fonctionnalités de l'application
 L'application utilise des méthodes d'analyse de données telles que l'Analyse en Composantes Principales (ACP), la Classification Ascendante Hiérarchique (CAH) et l'Analyse Factorielle Discriminante (AFD) pour établir une typologie des provinces marocaines basée sur la pauvreté multidimensionnelle.
+![image](https://github.com/ibtissam01/Poverty_2014/assets/89752387/1bf6f3a3-55e6-4a48-ace6-04aa23814844)
+
 
 Les principales fonctionnalités de l'application sont les suivantes :
 - Visualisation des résultats de l'ACP : affichage des composantes principales et des variables associées.
+  ![image](https://github.com/ibtissam01/Poverty_2014/assets/89752387/f102e96f-5e98-49a3-a443-2cd9138cb7ed)
+
 - Visualisation des résultats de la CAH : affichage du dendrogramme et des groupes de provinces formés.
+![image](https://github.com/ibtissam01/Poverty_2014/assets/89752387/6292e3b0-6832-43a0-8cd1-9fbebac94751)
 
 ## Utilisation de l'application
 Pour utiliser l'application(https://12iykl-ibtissamlabyady.shinyapps.io/Stage/).
